@@ -10,7 +10,13 @@ describe('PageTree', () => {
     // Assert
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(2);
-    expect(screen.getByRole('link', { name: /404/i })).toHaveAttribute('href', '/404');
-    expect(screen.getByRole('link', { name: /error/i })).toHaveAttribute('href', '/error');
+    expect(screen.getByRole('link', { name: /404/i })).toHaveAttribute(
+      'href',
+      '/404',
+    );
+    expect(screen.getByRole('link', { name: /error/i })).toHaveAttribute(
+      'href',
+      '/error',
+    );
   });
 });

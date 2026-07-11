@@ -18,7 +18,13 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await expect(canvas.getByRole('link', { name: /404/i })).toHaveAttribute('href', '/404');
-    await expect(canvas.getByRole('link', { name: /error/i })).toHaveAttribute('href', '/error');
+    await expect(canvas.getByRole('link', { name: /404/i })).toHaveAttribute(
+      'href',
+      '/404',
+    );
+    await expect(canvas.getByRole('link', { name: /error/i })).toHaveAttribute(
+      'href',
+      '/error',
+    );
   },
 };

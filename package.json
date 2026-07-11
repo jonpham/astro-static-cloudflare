@@ -2,6 +2,7 @@
   "name": "astro-static-cloudflare",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@9.12.1",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -11,12 +12,17 @@
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "astro check",
+    "format": "prettier --write \"**/*.{astro,css,js,mjs,json,jsonc,ts,tsx,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{astro,css,js,mjs,json,jsonc,ts,tsx,yml,yaml}\"",
     "test:unit": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:component": "concurrently -k -s first -n storybook,test \"storybook dev -p 6006 --ci --host 127.0.0.1\" \"wait-on http://127.0.0.1:6006 && test-storybook --url http://127.0.0.1:6006\"",
     "test:e2e": "playwright test",
-    "test": "pnpm test:unit && pnpm test:e2e"
+    "test": "pnpm test:unit && pnpm test:e2e",
+    "test:ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:unit && pnpm build && pnpm build-storybook && pnpm test:component && pnpm test:e2e"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.2",
@@ -29,6 +35,8 @@
     "wrangler": "^4.110.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.1",
     "@storybook/react-vite": "^10.5.0",
     "@storybook/test-runner": "^0.24.4",
@@ -36,10 +44,19 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "astro-eslint-parser": "^2.1.0",
     "concurrently": "^10.0.3",
+    "eslint": "^10.7.0",
+    "eslint-plugin-astro": "^2.1.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
     "jsdom": "^29.1.1",
+    "prettier": "^3.9.5",
+    "prettier-plugin-astro": "^0.14.1",
     "storybook": "^10.5.0",
     "tailwindcss": "^4.3.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.63.0",
     "vitest": "^4.1.10",
     "wait-on": "^9.0.10"
   }

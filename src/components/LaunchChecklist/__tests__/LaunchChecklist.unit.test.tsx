@@ -9,9 +9,15 @@ describe('LaunchChecklist', () => {
     render(<LaunchChecklist />);
 
     // Assert
-    expect(screen.getByRole('heading', { name: /launch checklist/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /astro page shell/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /react island/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /launch checklist/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /astro page shell/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /react island/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText('0 of 5 complete')).toBeInTheDocument();
   });
 
@@ -25,9 +31,8 @@ describe('LaunchChecklist', () => {
 
     // Assert
     expect(screen.getByText('1 of 5 complete')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /react island/i })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    expect(
+      screen.getByRole('button', { name: /react island/i }),
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 });

@@ -22,7 +22,11 @@ Provide a small, production-ready starting point for static sites that need:
 | `pnpm dev` | Starts the local Astro development server at `localhost:4321` | During feature work |
 | `pnpm build` | Builds the static site to `./dist/`  | Before deployment or review |
 | `pnpm preview` | Serves the built site locally | To inspect production output |
+| `pnpm lint` | Runs ESLint | Before opening a pull request |
+| `pnpm typecheck` | Runs Astro and TypeScript diagnostics | Before opening a pull request |
+| `pnpm format:check` | Checks Prettier formatting | Before opening a pull request |
 | `pnpm test` | Runs the default test suite | Before opening a pull request |
+| `pnpm test:ci` | Runs the full continuous integration suite locally | Before pushing a large change |
 | `pnpm test:unit` | Runs unit tests with Vitest | During component and utility work |
 | `pnpm test:component` | Runs Storybook interaction tests | After changing React components or stories |
 | `pnpm test:e2e` | Runs Playwright end-to-end tests | Before opening a pull request |
@@ -54,6 +58,8 @@ The expected test layers are:
 - End-to-end tests: Playwright against the built Astro site
 
 Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers.
+
+GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, component, and end-to-end checks on every push and pull request.
 
 ## Deployments
 

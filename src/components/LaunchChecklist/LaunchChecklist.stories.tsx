@@ -19,7 +19,9 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     await expect(canvas.getByText('0 of 5 complete')).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole('button', { name: /react island/i }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: /react island/i }),
+    );
     await expect(canvas.getByText('1 of 5 complete')).toBeInTheDocument();
   },
 };

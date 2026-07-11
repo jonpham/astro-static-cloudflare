@@ -15,12 +15,14 @@ export const defaultLaunchChecklistItems: LaunchChecklistItem[] = [
   {
     id: 'astro',
     label: 'Astro page shell',
-    description: 'File-based routes and layouts provide the static site foundation.',
+    description:
+      'File-based routes and layouts provide the static site foundation.',
   },
   {
     id: 'react',
     label: 'React island',
-    description: 'Interactive UI hydrates only where the page needs client behavior.',
+    description:
+      'Interactive UI hydrates only where the page needs client behavior.',
   },
   {
     id: 'tailwind',
@@ -30,28 +32,35 @@ export const defaultLaunchChecklistItems: LaunchChecklistItem[] = [
   {
     id: 'cloudflare',
     label: 'Cloudflare deployment target',
-    description: 'The project is configured for Cloudflare Pages-compatible builds.',
+    description:
+      'The project is configured for Cloudflare Pages-compatible builds.',
   },
   {
     id: 'tests',
     label: 'Tested at every layer',
-    description: 'Vitest, Storybook, and Playwright cover the starter experience.',
+    description:
+      'Vitest, Storybook, and Playwright cover the starter experience.',
   },
 ];
 
-export function LaunchChecklist({ items = defaultLaunchChecklistItems }: LaunchChecklistProps) {
+export function LaunchChecklist({
+  items = defaultLaunchChecklistItems,
+}: LaunchChecklistProps) {
   const initialCompletedIds = useMemo(
     () => items.filter((item) => item.defaultComplete).map((item) => item.id),
     [items],
   );
-  const [completedIds, setCompletedIds] = useState<string[]>(initialCompletedIds);
+  const [completedIds, setCompletedIds] =
+    useState<string[]>(initialCompletedIds);
 
   const completedCount = completedIds.length;
   const totalCount = items.length;
 
   function toggleItem(id: string) {
     setCompletedIds((current) =>
-      current.includes(id) ? current.filter((completedId) => completedId !== id) : [...current, id],
+      current.includes(id)
+        ? current.filter((completedId) => completedId !== id)
+        : [...current, id],
     );
   }
 
@@ -62,8 +71,13 @@ export function LaunchChecklist({ items = defaultLaunchChecklistItems }: LaunchC
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-sky-700">Interactive React island</p>
-          <h2 id="launch-checklist-heading" className="text-2xl font-semibold text-slate-950">
+          <p className="text-sm font-medium text-sky-700">
+            Interactive React island
+          </p>
+          <h2
+            id="launch-checklist-heading"
+            className="text-2xl font-semibold text-slate-950"
+          >
             Launch checklist
           </h2>
         </div>
@@ -97,7 +111,9 @@ export function LaunchChecklist({ items = defaultLaunchChecklistItems }: LaunchC
                 </span>
                 {item.label}
               </span>
-              <span className="pl-8 text-sm leading-6 text-slate-600">{item.description}</span>
+              <span className="pl-8 text-sm leading-6 text-slate-600">
+                {item.description}
+              </span>
             </button>
           );
         })}

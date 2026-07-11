@@ -8,7 +8,8 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm build && pnpm exec wrangler pages dev dist --ip 127.0.0.1 --port 4324',
+    command:
+      'pnpm build && pnpm exec wrangler pages dev dist --ip 127.0.0.1 --port 4324',
     url: 'http://127.0.0.1:4324',
     reuseExistingServer: false,
     timeout: 120_000,
