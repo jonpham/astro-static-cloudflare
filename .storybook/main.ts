@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import tailwindcss from '@tailwindcss/vite';
 
 const config: StorybookConfig = {
   framework: {
@@ -8,6 +9,12 @@ const config: StorybookConfig = {
   stories: ['../src/components/**/*.stories.@(ts|tsx)'],
   core: {
     disableTelemetry: true,
+  },
+  async viteFinal(config) {
+    config.plugins ??= [];
+    config.plugins.push(tailwindcss());
+
+    return config;
   },
 };
 

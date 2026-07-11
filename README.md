@@ -23,10 +23,13 @@ Provide a small, production-ready starting point for static sites that need:
 | `pnpm build` | Builds the static site to `./dist/`  | Before deployment or review |
 | `pnpm preview` | Serves the built site locally | To inspect production output |
 | `pnpm test` | Runs the default test suite | Before opening a pull request |
+| `pnpm test:unit` | Runs unit tests with Vitest | During component and utility work |
+| `pnpm test:component` | Runs Storybook interaction tests | After changing React components or stories |
+| `pnpm test:e2e` | Runs Playwright end-to-end tests | Before opening a pull request |
+| `pnpm storybook` | Starts Storybook at `localhost:6006` | During component development |
+| `pnpm build-storybook` | Builds the static Storybook site | Before Storybook deployment or review |
 | `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` | |
 | `pnpm astro -- --help` | Get help using the Astro CLI                     | |
-
-Add or adjust scripts in `package.json` as the implementation is scaffolded.
 
 ## Development
 
@@ -47,10 +50,10 @@ The expected test layers are:
 
 - Static analysis: formatting, linting, and TypeScript checks
 - Unit tests: utility functions and isolated React components
-- Component tests: Storybook play functions if Storybook is adopted
+- Component tests: Storybook play functions
 - End-to-end tests: Playwright against the built Astro site
 
-Exact commands belong in `package.json` once tooling is installed.
+Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers.
 
 ## Deployments
 
@@ -75,7 +78,7 @@ Cloudflare Pages is the primary deployment target.
 | Bundler | Vite |
 | Unit test runner | Vitest |
 | UI testing | Testing Library |
-| Component workshop | Storybook, if needed |
+| Component workshop | Storybook |
 | End-to-end testing | Playwright |
 | Continuous integration | GitHub Actions |
 | Hosting | Cloudflare Pages |
