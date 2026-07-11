@@ -72,6 +72,8 @@ The pre-commit hook runs `pnpm check:static`. It intentionally does not run brow
 
 Cloudflare Pages is the primary deployment target.
 
+Setup and teardown steps live in [docs/CLOUDFLARE_DEPLOYMENT.md](docs/CLOUDFLARE_DEPLOYMENT.md).
+
 - Pull requests should create Cloudflare Pages preview deployments.
 - Merges to `main` should create the staging Cloudflare Pages deployment.
 - End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.

@@ -34,6 +34,8 @@ This document is the source of truth for engineering conventions in this reposit
 
 Cloudflare Pages is the default deployment target.
 
+Setup and teardown steps live in [docs/CLOUDFLARE_DEPLOYMENT.md](CLOUDFLARE_DEPLOYMENT.md).
+
 - Pull requests should produce Cloudflare Pages preview deployments.
 - Merges to `main` should produce the staging Cloudflare Pages deployment.
 - End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
