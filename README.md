@@ -2,6 +2,8 @@
 
 Boilerplate for a static Astro site using React, TypeScript, and Tailwind CSS, deployed to Cloudflare Pages.
 
+Current Deployment URL: [https://astro-static-cloudflare.pages.dev](https://astro-static-cloudflare.pages.dev)
+
 ## Purpose
 
 Provide a small, production-ready starting point for static sites that need:
@@ -63,6 +65,8 @@ The expected test layers are:
 - End-to-end tests: Playwright against the built Astro site
 
 Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers. Set `PLAYWRIGHT_BASE_URL` to run end-to-end tests against a deployed Cloudflare Pages URL instead of the local preview server.
+
+The default target for `pnpm test:e2e` is the `PLAYWRIGHT_BASE_URL` ENV var, but if that is `undefined` it will use `wrangler pages dev` to deploy the contents of `/dist` locally as if it were deployed on Cloudflare. 
 
 GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, and component checks on every push to `main` and every pull request into `main`. Cloudflare Pages creates preview deployments through its GitHub integration, and GitHub Actions runs end-to-end checks when Cloudflare reports a successful Pages deployment URL.
 
