@@ -37,9 +37,7 @@ Cloudflare Pages is the default deployment target.
 - Merges to `main` should produce the staging Cloudflare Pages deployment.
 - End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
 - Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
-- Keep Cloudflare credentials in GitHub Actions secrets:
-  - `CLOUDFLARE_API_TOKEN`
-  - `CLOUDFLARE_ACCOUNT_ID`
+- Connect the repository through the Cloudflare Pages GitHub integration rather than storing Cloudflare deployment credentials in GitHub Actions.
 - Promote feature branches to `main` by pull request.
 - Cloudflare Workers should only be added if the project needs server-side request handling, middleware, scheduled jobs, or other runtime behavior.
 

@@ -59,7 +59,7 @@ The expected test layers are:
 
 Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers. Set `PLAYWRIGHT_BASE_URL` to run end-to-end tests against a deployed Cloudflare Pages URL instead of the local preview server.
 
-GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, and component checks on every push to `main` and every pull request into `main`. The Cloudflare Pages workflow deploys pull request previews and the `main` staging build, then runs end-to-end checks against the deployed URL.
+GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, and component checks on every push to `main` and every pull request into `main`. Cloudflare Pages creates preview deployments through its GitHub integration, and GitHub Actions runs end-to-end checks when Cloudflare reports a successful Pages deployment URL.
 
 ## Deployments
 
@@ -68,7 +68,7 @@ Cloudflare Pages is the primary deployment target.
 - Pull requests should create Cloudflare Pages preview deployments.
 - Merges to `main` should create the staging Cloudflare Pages deployment.
 - End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
-- Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub Actions secrets before enabling deployment checks.
+- Connect the repository through the Cloudflare Pages GitHub integration; GitHub Actions does not need Cloudflare API secrets for deployment.
 - Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
 - Cloudflare Workers should only be introduced if the site later needs server-side runtime behavior.
 
@@ -89,4 +89,4 @@ Cloudflare Pages is the primary deployment target.
 | End-to-end testing | Playwright |
 | Continuous integration | GitHub Actions |
 | Hosting | Cloudflare Pages |
-| Deployment tooling | Wrangler or Cloudflare Pages Git integration |
+| Deployment tooling | Cloudflare Pages Git integration |
