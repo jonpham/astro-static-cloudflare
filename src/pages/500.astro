@@ -1,5 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+interface Props {
+  error: unknown;
+}
+
+const { error } = Astro.props;
 ---
 
 <Layout
@@ -15,7 +21,7 @@ import Layout from '../layouts/Layout.astro';
         Error
       </p>
       <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
-        Something went wrong
+        Something went wrong{error instanceof Error ? `: ${error.message}` : ''}
       </h1>
       <p class="max-w-2xl text-lg leading-8 text-slate-600">
         This route demonstrates a generic Astro error page that future apps can

@@ -4,6 +4,15 @@
 
 These rules govern every agent session in this repository.
 
+## Current Handoff
+
+- The repository is on branch `bug/production-refactors`, created after PR #1 was merged into `main`.
+- The operator plans to manually review and refactor the project to better match their coding and repository preferences.
+- When work resumes, first inspect the user's changes before proposing or applying fixes. Treat those edits as intentional unless the user says otherwise.
+- Expected follow-up work: review the refactors, identify mismatches with existing tooling or conventions, and update durable docs and style guidance to match the settled preferences.
+- Deployment context: Cloudflare Pages is connected through the GitHub integration. PR previews are working. The operator also merged `main` into `production` and set Cloudflare Pages' production branch to `production`; defer any production-branch verification unless asked.
+- Prefer small, reviewable commits on this branch. Do not merge, delete branches, or change Cloudflare settings without explicit approval.
+
 ### After Every Step Of Work
 
 Output the following before stopping:
