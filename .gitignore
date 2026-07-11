@@ -1,11 +1,20 @@
 # build output
 dist/
+storybook-static/
 
 # generated types
 .astro/
+worker-configuration.d.ts
+
+# local Cloudflare state
+.wrangler/
 
 # dependencies
 node_modules/
+
+# test output
+playwright-report/
+test-results/
 
 # logs
 npm-debug.log*

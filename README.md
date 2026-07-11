@@ -13,18 +13,21 @@ Provide a small, production-ready starting point for static sites that need:
 - Vitest and Testing Library for local tests
 - Playwright for end-to-end checks
 - Cloudflare Pages for pull request previews and staging deployments from `main`
+- GitHub Actions for static analysis, unit tests, builds, Storybook checks, and deployed end-to-end checks
 
 ## Quickstart
 
 | Command | What it does | When to use |
-| :------------------------ | :----------------------------------------------- | :------------------------ |
+| :-- | :-- | :-- |
 | `pnpm install` | Installs dependencies | After cloning |
 | `pnpm dev` | Starts the local Astro development server at `localhost:4321` | During feature work |
-| `pnpm build` | Builds the static site to `./dist/` | Before deployment or review |
+| `pnpm check:static` | Runs lint, formatting check, and typecheck | Before committing |
+| `pnpm build` | Builds the static site to `./dist/`; Cloudflare Pages should publish `dist/client` | Before deployment or review |
 | `pnpm preview` | Serves the built site locally | To inspect production output |
 | `pnpm lint` | Runs ESLint | Before opening a pull request |
 | `pnpm typecheck` | Runs Astro and TypeScript diagnostics | Before opening a pull request |
 | `pnpm format:check` | Checks Prettier formatting | Before opening a pull request |
+| `pnpm format` | Applies Prettier formatting to source and config files | Before committing formatting changes |
 | `pnpm test` | Runs the default test suite | Before opening a pull request |
 | `pnpm test:ci` | Runs the full continuous integration suite locally | Before pushing a large change |
 | `pnpm test:unit` | Runs unit tests with Vitest | During component and utility work |
@@ -32,8 +35,9 @@ Provide a small, production-ready starting point for static sites that need:
 | `pnpm test:e2e` | Runs Playwright end-to-end tests | Before opening a pull request |
 | `pnpm storybook` | Starts Storybook at `localhost:6006` | During component development |
 | `pnpm build-storybook` | Builds the static Storybook site | Before Storybook deployment or review |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` | |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     | |
+| `pnpm generate-types` | Regenerates Cloudflare Worker binding types with Wrangler | After Cloudflare binding changes |
+| `pnpm astro ...` | Run CLI commands like `astro add`, `astro check` | Framework maintenance |
+| `pnpm astro -- --help` | Get help using the Astro CLI | Framework maintenance |
 
 ## Development
 
@@ -47,6 +51,7 @@ Detailed engineering standards live in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md
 - Changes should reach `main` through a pull request.
 - Rebase branches on the latest `main` before opening or updating a pull request.
 - Merges to `main` create the staging Cloudflare Pages deployment.
+- Husky runs `pnpm check:static` before commits.
 
 ## Testing
 
@@ -61,6 +66,8 @@ Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respe
 
 GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, and component checks on every push to `main` and every pull request into `main`. Cloudflare Pages creates preview deployments through its GitHub integration, and GitHub Actions runs end-to-end checks when Cloudflare reports a successful Pages deployment URL.
 
+The pre-commit hook runs `pnpm check:static`. It intentionally does not run browser tests, because those remain available through `pnpm test:ci` and GitHub Actions.
+
 ## Deployments
 
 Cloudflare Pages is the primary deployment target.
@@ -70,7 +77,17 @@ Cloudflare Pages is the primary deployment target.
 - End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
 - Connect the repository through the Cloudflare Pages GitHub integration; GitHub Actions does not need Cloudflare API secrets for deployment.
 - Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
+- Configure Cloudflare Pages with build command `pnpm build`, output directory `dist/client`, and `NODE_VERSION=24`.
 - Cloudflare Workers should only be introduced if the site later needs server-side runtime behavior.
+
+Wrangler is still useful for local authentication, inspection, and Pages development:
+
+```sh
+pnpm exec wrangler login
+pnpm exec wrangler whoami
+pnpm exec wrangler pages project list --json
+pnpm exec wrangler pages deployment list --project-name <project-name>
+```
 
 ## Project Tools
 
@@ -83,6 +100,8 @@ Cloudflare Pages is the primary deployment target.
 | UI islands | React |
 | Styling | Tailwind CSS |
 | Bundler | Vite |
+| Static analysis | ESLint, Prettier, Astro check |
+| Git hooks | Husky |
 | Unit test runner | Vitest |
 | UI testing | Testing Library |
 | Component workshop | Storybook |
