@@ -4,13 +4,13 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL: 'http://127.0.0.1:4324',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm dev --host 127.0.0.1',
-    url: 'http://127.0.0.1:4321',
-    reuseExistingServer: !process.env.CI,
+    command: 'pnpm build && pnpm exec wrangler pages dev dist --ip 127.0.0.1 --port 4324',
+    url: 'http://127.0.0.1:4324',
+    reuseExistingServer: true,
     timeout: 120_000,
   },
   projects: [
