@@ -12,6 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
+    "prepare": "husky",
+    "check:static": "pnpm lint && pnpm format:check && pnpm typecheck",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "astro check",
     "format": "prettier --write \"**/*.{astro,css,js,mjs,json,jsonc,ts,tsx,yml,yaml}\"",
@@ -22,7 +24,7 @@
     "test:component": "concurrently -k -s first -n storybook,test \"storybook dev -p 6006 --ci --host 127.0.0.1\" \"wait-on http://127.0.0.1:6006 && test-storybook --url http://127.0.0.1:6006\"",
     "test:e2e": "playwright test",
     "test": "pnpm test:unit && pnpm test:e2e",
-    "test:ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:unit && pnpm build && pnpm build-storybook && pnpm test:component && pnpm test:e2e"
+    "test:ci": "pnpm check:static && pnpm test:unit && pnpm build && pnpm build-storybook && pnpm test:component && pnpm test:e2e"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.2",
@@ -50,6 +52,7 @@
     "eslint-plugin-astro": "^2.1.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.7.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",

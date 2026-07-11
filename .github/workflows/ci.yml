@@ -45,10 +45,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Static analysis
-        run: |
-          pnpm lint
-          pnpm format:check
-          pnpm typecheck
+        run: pnpm check:static
 
       - name: Unit tests
         run: pnpm test:unit
