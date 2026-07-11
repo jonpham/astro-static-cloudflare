@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - main
-      - staging
-      - production
   pull_request:
     branches:
       - main
-      - staging
-      - production
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -58,6 +54,3 @@ jobs:
 
       - name: Component tests
         run: pnpm test:component
-
-      - name: End-to-end tests
-        run: pnpm test:e2e

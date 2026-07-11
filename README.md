@@ -12,7 +12,7 @@ Provide a small, production-ready starting point for static sites that need:
 - Tailwind CSS for styling
 - Vitest and Testing Library for local tests
 - Playwright for end-to-end checks
-- Cloudflare Pages for preview and production deployments
+- Cloudflare Pages for pull request previews and staging deployments from `main`
 
 ## Quickstart
 
@@ -20,7 +20,7 @@ Provide a small, production-ready starting point for static sites that need:
 | :------------------------ | :----------------------------------------------- | :------------------------ |
 | `pnpm install` | Installs dependencies | After cloning |
 | `pnpm dev` | Starts the local Astro development server at `localhost:4321` | During feature work |
-| `pnpm build` | Builds the static site to `./dist/`  | Before deployment or review |
+| `pnpm build` | Builds the static site to `./dist/` | Before deployment or review |
 | `pnpm preview` | Serves the built site locally | To inspect production output |
 | `pnpm lint` | Runs ESLint | Before opening a pull request |
 | `pnpm typecheck` | Runs Astro and TypeScript diagnostics | Before opening a pull request |
@@ -46,7 +46,7 @@ Detailed engineering standards live in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md
 - Commits should follow the [Conventional Commits](https://www.conventionalcommits.org/) format.
 - Changes should reach `main` through a pull request.
 - Rebase branches on the latest `main` before opening or updating a pull request.
-- `staging` and `production` are deployment branches used for release promotion.
+- Merges to `main` create the staging Cloudflare Pages deployment.
 
 ## Testing
 
@@ -57,18 +57,19 @@ The expected test layers are:
 - Component tests: Storybook play functions
 - End-to-end tests: Playwright against the built Astro site
 
-Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers.
+Run `pnpm test:unit`, `pnpm test:component`, and `pnpm test:e2e` for their respective test layers. Set `PLAYWRIGHT_BASE_URL` to run end-to-end tests against a deployed Cloudflare Pages URL instead of the local preview server.
 
-GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, component, and end-to-end checks on every push and pull request.
+GitHub Actions runs the static-analysis layer first, then unit, build, Storybook, and component checks on every push to `main` and every pull request into `main`. The Cloudflare Pages workflow deploys pull request previews and the `main` staging build, then runs end-to-end checks against the deployed URL.
 
 ## Deployments
 
 Cloudflare Pages is the primary deployment target.
 
 - Pull requests should create Cloudflare Pages preview deployments.
-- The `staging` branch should deploy release candidates to the staging Cloudflare Pages environment.
-- The `production` branch should deploy approved releases to the production Cloudflare Pages environment.
-- Promote changes by pull request rather than direct pushes between deployment branches.
+- Merges to `main` should create the staging Cloudflare Pages deployment.
+- End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
+- Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub Actions secrets before enabling deployment checks.
+- Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
 - Cloudflare Workers should only be introduced if the site later needs server-side runtime behavior.
 
 ## Project Tools

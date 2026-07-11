@@ -14,7 +14,7 @@ This document is the source of truth for engineering conventions in this reposit
   - `docs/` for documentation-only changes
   - `chore/` for maintenance work
 - Rebase on the latest `main` before opening or updating a pull request.
-- `staging` and `production` are deployment branches, not day-to-day development branches.
+- Merges to `main` create the staging Cloudflare Pages deployment.
 
 ### Commits
 
@@ -34,12 +34,13 @@ This document is the source of truth for engineering conventions in this reposit
 Cloudflare Pages is the default deployment target.
 
 - Pull requests should produce Cloudflare Pages preview deployments.
-- The `staging` branch should deploy release candidates to the staging Cloudflare Pages environment.
-- The `production` branch should deploy approved releases to the production Cloudflare Pages environment.
-- Promote changes by pull request:
-  - feature branch to `main`
-  - `main` to `staging`
-  - `staging` to `production`
+- Merges to `main` should produce the staging Cloudflare Pages deployment.
+- End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
+- Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
+- Keep Cloudflare credentials in GitHub Actions secrets:
+  - `CLOUDFLARE_API_TOKEN`
+  - `CLOUDFLARE_ACCOUNT_ID`
+- Promote feature branches to `main` by pull request.
 - Cloudflare Workers should only be added if the project needs server-side request handling, middleware, scheduled jobs, or other runtime behavior.
 
 ## Testing Strategy
@@ -71,6 +72,7 @@ Avoid comments that simply repeat the next line of code.
 
 - Put browser-level tests in `tests/e2e/`.
 - Prefer testing built production output with `pnpm build` and `pnpm preview`.
+- Set `PLAYWRIGHT_BASE_URL` when testing an already deployed environment.
 - Keep tests focused on user-visible behavior and important regressions.
 
 ## UI Component Organization
