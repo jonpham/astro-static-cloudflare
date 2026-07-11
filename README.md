@@ -17,12 +17,14 @@ Provide a small, production-ready starting point for static sites that need:
 ## Quickstart
 
 | Command | What it does | When to use |
-| --- | --- | --- |
+| :------------------------ | :----------------------------------------------- | :------------------------ |
 | `pnpm install` | Installs dependencies | After cloning |
-| `pnpm dev` | Starts the local Astro development server | During feature work |
-| `pnpm build` | Builds the static site | Before deployment or review |
+| `pnpm dev` | Starts the local Astro development server at `localhost:4321` | During feature work |
+| `pnpm build` | Builds the static site to `./dist/`  | Before deployment or review |
 | `pnpm preview` | Serves the built site locally | To inspect production output |
 | `pnpm test` | Runs the default test suite | Before opening a pull request |
+| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` | |
+| `pnpm astro -- --help` | Get help using the Astro CLI                     | |
 
 Add or adjust scripts in `package.json` as the implementation is scaffolded.
 
