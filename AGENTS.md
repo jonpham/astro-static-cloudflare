@@ -45,6 +45,9 @@ Keep this repository aligned around:
 - TypeScript for application code
 - Tailwind CSS for styling
 - Cloudflare Pages as the default hosting target
+- Cloudflare Pages GitHub integration for previews and staging deployments
+- GitHub Actions for continuous integration and deployed end-to-end checks
+- Husky for local pre-commit static analysis
 
 ## Git Conventions
 
@@ -56,13 +59,28 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#git-strategy) for repository rules
 - Never merge a pull request without explicit approval in the current session.
 - Before pushing, run `git status --short --branch` and verify the intended upstream.
 - If the upstream is missing or points at `origin/main`, use an explicit refspec such as `git push -u origin HEAD:<branch-name>`.
+- Use [Conventional Branch](https://conventionalbranch.org/) names and [Conventional Commits](https://www.conventionalcommits.org/) messages.
 
 ## Test Discipline
 
 - Prefer test-driven development for behavior changes: failing test, implementation, green test, refactor.
 - Documentation-only changes do not require tests, but should be checked for broken links and stale references.
 - Application changes should include tests at the smallest useful layer.
+- Run `pnpm check:static` before committing; Husky also runs it automatically.
+- Use `pnpm test:ci` for full local verification before pushing larger changes.
 - Use the test locations and commands defined in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#testing-strategy).
+
+## Deployment Discipline
+
+- Cloudflare Pages deployments are owned by the Cloudflare GitHub integration, not by GitHub Actions secrets.
+- Configure Cloudflare Pages with build command `pnpm build`, output directory `dist/client`, and `NODE_VERSION=24`.
+- Pull requests should create Cloudflare Pages preview deployments.
+- Merges to `main` should create the staging Cloudflare Pages deployment.
+- GitHub Actions should run deployed end-to-end tests from Cloudflare `deployment_status` events.
+- Use Wrangler locally for Cloudflare authentication and inspection:
+  - `pnpm exec wrangler login`
+  - `pnpm exec wrangler whoami`
+  - `pnpm exec wrangler pages project list --json`
 
 ## Documentation Discipline
 
@@ -72,7 +90,7 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#git-strategy) for repository rules
 - Remove copied assumptions as soon as they no longer match this repository.
 - Do not reference files, branches, services, or commands that do not exist yet unless the text clearly marks them as planned.
 
-------- 
+-------
 _Astro Specific instructions_
 
 ## Development
@@ -97,4 +115,4 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
-------- 
+---

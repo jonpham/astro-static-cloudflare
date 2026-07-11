@@ -1,0 +1,10 @@
+.astro/
+.wrangler/
+dist/
+docs/superpowers/
+node_modules/
+playwright-report/
+pnpm-lock.yaml
+storybook-static/
+test-results/
+worker-configuration.d.ts

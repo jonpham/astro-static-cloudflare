@@ -1,23 +1,29 @@
+---
+import '../styles/global.css';
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const {
+  title = 'Astro Static Cloudflare',
+  description = 'Astro, React, Tailwind CSS, and Cloudflare Pages boilerplate.',
+} = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Witty Machinations</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-950 antialiased">
+    <slot />
+  </body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

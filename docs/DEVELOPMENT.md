@@ -14,7 +14,8 @@ This document is the source of truth for engineering conventions in this reposit
   - `docs/` for documentation-only changes
   - `chore/` for maintenance work
 - Rebase on the latest `main` before opening or updating a pull request.
-- `staging` and `production` are deployment branches, not day-to-day development branches.
+- Merges to `main` create the staging Cloudflare Pages deployment.
+- Husky runs `pnpm check:static` before commits.
 
 ### Commits
 
@@ -33,13 +34,20 @@ This document is the source of truth for engineering conventions in this reposit
 
 Cloudflare Pages is the default deployment target.
 
+Setup and teardown steps live in [docs/CLOUDFLARE_DEPLOYMENT.md](CLOUDFLARE_DEPLOYMENT.md).
+
 - Pull requests should produce Cloudflare Pages preview deployments.
-- The `staging` branch should deploy release candidates to the staging Cloudflare Pages environment.
-- The `production` branch should deploy approved releases to the production Cloudflare Pages environment.
-- Promote changes by pull request:
-  - feature branch to `main`
-  - `main` to `staging`
-  - `staging` to `production`
+- Merges to `main` should produce the staging Cloudflare Pages deployment.
+- End-to-end tests should run against the deployed Cloudflare Pages URL in GitHub Actions.
+- Configure the Cloudflare Pages project so `main` creates a preview deployment used as staging rather than the production deployment.
+- Connect the repository through the Cloudflare Pages GitHub integration rather than storing Cloudflare deployment credentials in GitHub Actions.
+- Configure Cloudflare Pages with build command `pnpm build`, output directory `dist/client`, and `NODE_VERSION=24`.
+- Use Wrangler locally for login, account checks, and deployment inspection:
+  - `pnpm exec wrangler login`
+  - `pnpm exec wrangler whoami`
+  - `pnpm exec wrangler pages project list --json`
+  - `pnpm exec wrangler pages deployment list --project-name <project-name>`
+- Promote feature branches to `main` by pull request.
 - Cloudflare Workers should only be added if the project needs server-side request handling, middleware, scheduled jobs, or other runtime behavior.
 
 ## Testing Strategy
@@ -48,12 +56,12 @@ Use the smallest test layer that gives useful confidence.
 
 | Layer | Purpose | Suggested location | Suggested command |
 | --- | --- | --- | --- |
-| Static analysis | Formatting, linting, and TypeScript correctness | Repository configs | `pnpm lint`, `pnpm format:check`, `pnpm typecheck` |
+| Static analysis | Formatting, linting, and TypeScript correctness | Repository configs | `pnpm check:static`, or `pnpm lint`, `pnpm format:check`, and `pnpm typecheck` |
 | Unit | Pure utilities and isolated React components | Near source in `__tests__/` directories | `pnpm test:unit` |
 | Component | Interactive UI behavior in isolation | Story files near components, if Storybook is adopted | `pnpm test:component` |
 | End-to-end | Built-site flows in a browser | `tests/e2e/` | `pnpm test:e2e` |
 
-Until the toolchain exists, add these commands to `package.json` as the corresponding tools are installed.
+Run `pnpm test:ci` before larger pull request updates. It runs static analysis, unit tests, the site build, the Storybook build, component tests, and local end-to-end tests.
 
 ## Test Structure
 
@@ -71,7 +79,10 @@ Avoid comments that simply repeat the next line of code.
 
 - Put browser-level tests in `tests/e2e/`.
 - Prefer testing built production output with `pnpm build` and `pnpm preview`.
+- Set `PLAYWRIGHT_BASE_URL` when testing an already deployed environment.
 - Keep tests focused on user-visible behavior and important regressions.
+
+GitHub Actions runs local browser checks in the main continuous integration workflow and deployed-environment checks after Cloudflare posts a successful Pages deployment status.
 
 ## UI Component Organization
 
@@ -107,7 +118,7 @@ tests/e2e/task-list.e2e.spec.ts  # End-to-end
 - Keep reusable class patterns close to the component that owns them.
 - Prefer accessible semantic HTML before adding custom interactive behavior.
 - Use Prettier and ESLint recommendations for React and TypeScript static analysis.
-- Enforce formatting and linting through project tooling once the scaffold is in place.
+- Enforce formatting and linting through Husky pre-commit hooks and GitHub Actions.
 
 ## When To Abstract
 
