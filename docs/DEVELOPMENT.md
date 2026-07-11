@@ -1,82 +1,114 @@
-# Development Guidlines
+# Development Guidelines
+
+This document is the source of truth for engineering conventions in this repository. Keep the README focused on orientation and put durable development rules here.
 
 ## Git Strategy
-### Branching Strategy
-- `main` is the primary development branch, and the HEAD of the branch should always have passing unit-tests/lint-checks. 
-- All development branches off `main` should follow `feat/` , `bug/`, `chore/`, See https://conventionalbranch.org
-- All commits should follow Conventional Commit Standard. See https://www.conventionalcommits.org/
 
-### Merges / History
-- Semi-linear history should be kept with new branches being rebased to `main` but only contribute to `main` with a merge commit via a Pull Request only.
-- All development branches off `main` should 
+### Branching
 
-### Deployment Branch
-- `staging`
-- `production`
+- `main` is the protected source of truth and should remain releasable.
+- Use feature branches for all changes.
+- Branch names should follow [Conventional Branch](https://conventionalbranch.org/) prefixes:
+  - `feat/` for new user-facing behavior
+  - `fix/` for bug fixes
+  - `docs/` for documentation-only changes
+  - `chore/` for maintenance work
+- Rebase on the latest `main` before opening or updating a pull request.
+- `staging` and `production` are deployment branches, not day-to-day development branches.
+
+### Commits
+
+- Use [Conventional Commits](https://www.conventionalcommits.org/), such as `feat: add landing page shell` or `docs: clarify deployment flow`.
+- Keep commits focused enough that they can be reviewed independently.
+- Do not commit directly to `main`.
+
+### Pull Requests
+
+- Merge through pull requests only.
+- Keep pull requests scoped to one coherent change.
+- Run the relevant local checks before requesting review.
+- Do not merge without explicit approval from the repository owner or maintainer.
+
+## Deployment Strategy
+
+Cloudflare Pages is the default deployment target.
+
+- Pull requests should produce Cloudflare Pages preview deployments.
+- The `staging` branch should deploy release candidates to the staging Cloudflare Pages environment.
+- The `production` branch should deploy approved releases to the production Cloudflare Pages environment.
+- Promote changes by pull request:
+  - feature branch to `main`
+  - `main` to `staging`
+  - `staging` to `production`
+- Cloudflare Workers should only be added if the project needs server-side request handling, middleware, scheduled jobs, or other runtime behavior.
 
 ## Testing Strategy
 
-Establishes the local and CI version of all five layers of the project test pyramid:
+Use the smallest test layer that gives useful confidence.
 
-- **Static Analysis:** ESLint, Prettier, and TypeScript scripts at package and recursive workspace levels. Mandatory in CI and enforced locally by the Husky pre-commit hook.
-- **Unit:** pure service behavior and React UI Components rendered in isolation via Vitest + Testing Library.
-- **UI Component tests** authored as Storybook 8 stories with play functions, executed via `@storybook/test-runner` against the built Storybook static. `msw-storybook-addon` initializes Mock Service Worker inside the story preview so the same handler set stubs any `service` boundary in both Vitest setup and Storybook. Each play function doubles as a Manual Visual Check surface when run interactively.
-- **End-to-End:** Playwright Chromium drives the Docker Compose stack through the PWA against the real `service-task` boundary and a clean pglite database supplied by the E2E overlay.
+| Layer | Purpose | Suggested location | Suggested command |
+| --- | --- | --- | --- |
+| Static analysis | Formatting, linting, and TypeScript correctness | Repository configs | `pnpm lint`, `pnpm format:check`, `pnpm typecheck` |
+| Unit | Pure utilities and isolated React components | Near source in `__tests__/` directories | `pnpm test:unit` |
+| Component | Interactive UI behavior in isolation | Story files near components, if Storybook is adopted | `pnpm test:component` |
+| End-to-end | Built-site flows in a browser | `tests/e2e/` | `pnpm test:e2e` |
 
-## When to abstract? 
-tbd
+Until the toolchain exists, add these commands to `package.json` as the corresponding tools are installed.
 
-## UI Component folder/organization
-_For REACT components_
+## Test Structure
 
-- Every UI Component gets its own directory from creation: `<Name>.tsx`, child `__tests__/` directory for `*.unit.test.tsx` and `*.stories.tsx`, helpers, styles, and `index.ts` re-export. No flat files in `src/components/`.
-- **Nesting rule:** if a UI Component is consumed by exactly one parent, nest it as a subdirectory of that parent (see `TaskRow/` under `TaskList/` in the example above). Promote back up to `src/components/<Name>/` only when a second consumer appears.
-- **Root-page exception:** top-level pages / routes (`App.tsx`, `src/pages/*`) may stay flat — they're the application shell with no parent.
+### Unit And Component Tests
 
-
-## Test File and Organization
-- Test files should be colocated with their classes and components when possible in /src/*
-- E2E Test files that act on a running application should be located in /test/*
-
-**API Component tests use Given / When / Then.** Applies to service Unit tests (`*.unit.test.ts`), service Component contract tests (`*.contract.test.ts`), and service Integration tests (`tests/integration/*.integration.test.ts`).
-
-- Put required setup that is not the test-specific condition above `// Given`.
-- Put the unique input, state, or condition that drives the assertion below `// Given`.
-- Use `// When` for the action under test when a response or result is captured.
-- Use `// Then` for assertions.
-- Use `// When / Then` for status-only assertions where the request/result and assertion are one fluent chain.
-- Prefer route-scoped `describe()` blocks for HTTP contract tests, such as `describe('POST /tasks')`.
-- Prefer request helpers and payload builders over repeated raw `supertest` boilerplate.
-- Prefer one ownership comment per `describe()` block when several tests exercise the same lower-level behavior.
-- Reference the responsible file/module.
-- Keep comments factual and focused on ownership boundaries.
-- Do not comment obvious controller-local behavior.
-
-**UI Component tests use Arrange / Act / Assert.** Applies to UI Component Unit tests (`*.unit.test.tsx`) and Storybook play functions (`*.stories.tsx`).
+Use Arrange / Act / Assert comments when they improve scanning:
 
 - `// Arrange` sets up render state, props, handlers, and mocked boundaries.
 - `// Act` performs user interaction or lifecycle triggers.
 - `// Assert` verifies visible behavior or callback effects.
-- Use comments where they improve scanning; avoid comments that merely repeat the next line.
 
-Example layout (one tree covers both system components):
+Avoid comments that simply repeat the next line of code.
 
-```
-/src/components/TaskList/
+### End-To-End Tests
+
+- Put browser-level tests in `tests/e2e/`.
+- Prefer testing built production output with `pnpm build` and `pnpm preview`.
+- Keep tests focused on user-visible behavior and important regressions.
+
+## UI Component Organization
+
+For React components:
+
+- Give each reusable UI component its own directory from creation.
+- Keep unit tests and Storybook stories in the component's `__tests__/` directory.
+- Use this shape as the default for anticipated React component build-out:
+
+```text
+src/components/TaskList/
   __tests__/
-    TaskList.unit.test.tsx                 ← Unit
-    TaskList.stories.tsx                   ← Component (Storybook play function, MSW)
+    TaskList.unit.test.tsx       # Unit
+    TaskList.stories.tsx         # Component: Storybook play function
   TaskList.tsx
-  index.ts                                 ← re-export
-  TaskRow/                                 ← Nesting: child consumed only by TaskList
+  index.ts                       # Re-export
+  TaskRow/                       # Nested child consumed only by TaskList
     __tests__/
       TaskRow.unit.test.tsx
     TaskRow.tsx
     index.ts
 
-/tests/e2e/m1-task-crud.e2e.spec.ts               ← E2E
+tests/e2e/task-list.e2e.spec.ts  # End-to-end
 ```
 
-## Style
+- If a component is consumed by exactly one parent, nest it under that parent.
+- Promote a nested component to `src/components/<Name>/` only when a second consumer appears.
+- Top-level Astro pages and route files may follow Astro conventions instead of the React component directory rule.
 
-Use prettier/eslint recommendations for React & Typescript for static analysis.
+## Styling
+
+- Use Tailwind CSS for styling unless a feature has a clear reason to use local CSS.
+- Keep reusable class patterns close to the component that owns them.
+- Prefer accessible semantic HTML before adding custom interactive behavior.
+- Use Prettier and ESLint recommendations for React and TypeScript static analysis.
+- Enforce formatting and linting through project tooling once the scaffold is in place.
+
+## When To Abstract
+
+Start with straightforward local code. Add an abstraction only when it removes real duplication, clarifies ownership, or matches an established pattern in this repository.

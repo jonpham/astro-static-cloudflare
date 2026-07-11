@@ -1,83 +1,80 @@
 # astro-static-cloudflare
-2026 Boilerplate repository; Static Site built on Astro, React, TypeScript. Deployed to Cloudflare Pages/Workers. Agent in the Loop
+
+Boilerplate for a static Astro site using React, TypeScript, and Tailwind CSS, deployed to Cloudflare Pages.
 
 ## Purpose
-Provide a boilerplate for a Astro-based Static Site that can be deployed to Cloudflare Pages via Github CI/CD.
 
-## Common Repository Scripts and Commands
+Provide a small, production-ready starting point for static sites that need:
 
-See [Project Tools](#project-tools) below.
+- Astro as the site framework
+- React for interactive islands
+- TypeScript for application code
+- Tailwind CSS for styling
+- Vitest and Testing Library for local tests
+- Playwright for end-to-end checks
+- Cloudflare Pages for preview and production deployments
 
-| Script Call | What it Does| When to Use|
-| ------------------------|-----|-------------------- | 
-| `pnpm install` | Installs dependencies | on new clone |
+## Quickstart
 
-## Development 
-For more detailed Development guidelines, see [/docs/DEVELOPMENT](./docs/DEVELOPMENT.md);
+| Command | What it does | When to use |
+| --- | --- | --- |
+| `pnpm install` | Installs dependencies | After cloning |
+| `pnpm dev` | Starts the local Astro development server | During feature work |
+| `pnpm build` | Builds the static site | Before deployment or review |
+| `pnpm preview` | Serves the built site locally | To inspect production output |
+| `pnpm test` | Runs the default test suite | Before opening a pull request |
+
+Add or adjust scripts in `package.json` as the implementation is scaffolded.
+
+## Development
+
+Detailed engineering standards live in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Keep durable rules there and keep this README focused on project orientation.
 
 ## Git Strategy
-### Branching & Commit Strategy
-- `main` is the primary development branch, and the HEAD of the branch should always have passing unit-tests/lint-checks. 
-- All development branches off `main` should follow `feat/` , `bug/`, `chore/`, See https://conventionalbranch.org
-- All commits should follow Conventional Commit Standard. See https://www.conventionalcommits.org/
 
-### Merges / History
-- Semi-linear history should be kept with new branches being rebased to `main` but only contribute to `main` with a merge commit via a Pull Request only.
-
-### Deployment Branches
-See [Deployments](#deployments).
-
-- `staging`
-- `production`
+- `main` is the protected source of truth.
+- Feature branches should follow [Conventional Branch](https://conventionalbranch.org/) prefixes such as `feat/`, `fix/`, `docs/`, and `chore/`.
+- Commits should follow the [Conventional Commits](https://www.conventionalcommits.org/) format.
+- Changes should reach `main` through a pull request.
+- Rebase branches on the latest `main` before opening or updating a pull request.
+- `staging` and `production` are deployment branches used for release promotion.
 
 ## Testing
-### Static Analysis:
-ESLint, Prettier, and TypeScript scripts. Mandatory in CI and enforced locally by the Husky pre-commit hook.
 
-### Unit-Tests
-- Includes Component / Integration Test that run with `react-testing-library` syntaxed tools and run with `vitest` 
+The expected test layers are:
 
-#### UI Component and Integration Tests
-- Runs in staging environment against published Storybook mounted at `/storybook`
-- Storybook not published to production instance / branch deploy.
+- Static analysis: formatting, linting, and TypeScript checks
+- Unit tests: utility functions and isolated React components
+- Component tests: Storybook play functions if Storybook is adopted
+- End-to-end tests: Playwright against the built Astro site
 
-### System-Tests
-- Playwright E2E tests runs against staging environment after deployment. 
+Exact commands belong in `package.json` once tooling is installed.
 
 ## Deployments
-### Local Deployment
-- Build and run a docker container exposing the Static site at port 80
 
-### Staging Cloudflare Pages - branch based preview deployments
-See [Branching Strategy](#branching-strategy)
+Cloudflare Pages is the primary deployment target.
 
-CI-CD shall deploy release candidates and mount a preview staging URL using Cloudflare Pages Preview environments.
-These will be based on the HEAD of the `staging` branch.
-
-
-### Cloudflare Workers (Production)
-See [Branching Strategy](#branching-strategy)
-
-CI-CD shall deploy production releases and mount a to Production URL using Cloudflare Pages/Workers environments.
-These will be based on the HEAD of the `production` branch.
+- Pull requests should create Cloudflare Pages preview deployments.
+- The `staging` branch should deploy release candidates to the staging Cloudflare Pages environment.
+- The `production` branch should deploy approved releases to the production Cloudflare Pages environment.
+- Promote changes by pull request rather than direct pushes between deployment branches.
+- Cloudflare Workers should only be introduced if the site later needs server-side runtime behavior.
 
 ## Project Tools
 
-| JS/TS Aspect            | Utilized                                              |
-| ----------------------- | ----------------------------------------------------- |
-| Javascript runtime      | Node.js (can be Bun)                                  |
-| Package & Node Version manager | PNPM                                           |
-| Scaffolding             | Astro Framework (Default Toolchain)                   |
-| Module Format           | EcmaScript (ESM)                                      |
-| Bundler                 | Rollup (via Vite)                                     |
-| TS Compiler             | TSC                                                   |
-| JS Transpiler           | SWC (via Vite)                                        |
-| UI Platform             | React                                                 |
-| UI Styling              | Tailwind CSS-in-JS                                    |
-| Linters                 | ESLint/Prettier                                       |
-| TS/JS Unit Test Tool    | vitest/react-testing-library ([Details](#unit-tests)) |
-| React Component Testing | Storybook                                             |
-| Web App E2E             | Playwright                                            |
-| CI/CD                   | Github                                                |
-| Production Host         | Cloudflare Worker                                     |
-| Deployment Tooling      | Cloudflare `wrangler`                                 |
+| Aspect | Tool |
+| --- | --- |
+| Runtime | Node.js |
+| Package manager | pnpm |
+| Site framework | Astro |
+| Language | TypeScript |
+| UI islands | React |
+| Styling | Tailwind CSS |
+| Bundler | Vite |
+| Unit test runner | Vitest |
+| UI testing | Testing Library |
+| Component workshop | Storybook, if needed |
+| End-to-end testing | Playwright |
+| Continuous integration | GitHub Actions |
+| Hosting | Cloudflare Pages |
+| Deployment tooling | Wrangler or Cloudflare Pages Git integration |
