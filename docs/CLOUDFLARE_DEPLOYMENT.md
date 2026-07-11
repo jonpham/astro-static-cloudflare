@@ -23,8 +23,8 @@ Use this guide to connect this repository to Cloudflare Pages, get pull request 
 | Build output directory | `dist/client` |
 | Node version | `24` |
 
-6. Set the production branch to a future production branch if Cloudflare requires one.
-7. Keep `main` available for the staging-style deployment described in this repository.
+6. Set the production branch to `main`.
+7. Treat the `main` Pages deployment as this repository's staging deployment until a separate production branch is added.
 
 ## Verify The Setup
 
@@ -52,6 +52,8 @@ If the check says **Workers Builds** instead of Pages, the repository was connec
 
 If `wrangler pages project list --json` returns `[]`, the authenticated Cloudflare account has no Pages project.
 
+If the first Pages deployment builds `main` before this pull request merges, it can fail on old repository configuration. Push a new commit to the pull request after connecting Pages so Cloudflare creates a preview deployment from the pull request branch.
+
 ## Remove Cloudflare Deployment
 
 Use these steps when archiving the repository or removing hosted deployments:
@@ -68,4 +70,3 @@ rm .github/workflows/cloudflare-pages-e2e.yml
 ```
 
 7. Remove deployment documentation that no longer applies.
-
